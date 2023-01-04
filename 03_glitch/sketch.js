@@ -36,8 +36,8 @@ function setup() {
 
   r1 = round(random(14, 32))
   r2 = round(random(17, 27))
-  r3 = random(0.01, 0.00005) 
-  r4 = round(random(0.1, 0.03));
+  r3 = random(0.01, 0.0005) 
+  r4 = round(random(0.91, 0.03));
   r5 = random(0.005, 0.1)
 
   c0 = floor(random(359));
@@ -52,7 +52,7 @@ function draw() {
   let size = map(noise(6666, 9999, t), 0, 1, 40, 250);
   b2.push()
   b2.translate(-w/2, -h/2)
-  b2.fill(c0, 100, 100, 1)
+  b2.fill(t*50.0 %360, 100, 100, 0.5)
   b2.circle(nx-w/2, ny-h/2, size)
   b2.pop()
   t += 0.011;
@@ -60,22 +60,20 @@ function draw() {
   if (frameCount < 1 || frameCount% 100 === 0) {
     r1 = round(random(4, 22))
     r2 = round(random(7, 17))
-    r3 = random(0.001, 0.0005) 
+    r3 = random(0.001, 0.005) 
     r4 = round(random(0.51, 0.03));
-    r5 = random(0.5, 0.001)
-    r6 = random(0.05, -0.05)
+    r5 = random(0.05, 0.001)
+    r6 = random(0.005, -0.005)
 
     c0 = floor(random(359));
     c1 = (c0 + 150) % 360;
     c2 = (c0 + 210) % 360;
     c3 = (c0 + 30) % 360;
     c = [c0, c1, c2, c3];
-
+    b2.clear()
     b2.push()
     b2.translate(-w/2, -h/2)
     b2.beginShape()
-    b2.fill(c[i%3], 100, 100, random(0, 100));
-    b2.vertex(nx, ny);
     for(i = 0; i < 12; i++){
       b2.fill(c[i%3], 100, 100, random(0, 100));
       b2.vertex(random(0, w), random(0, h));
@@ -86,7 +84,6 @@ function draw() {
     b0.image(b2, -w/2, -h/2, w, h)
     b0.pop()
   }
-  
   s.setUniform('tex0', b0);
   s.setUniform('tex1', b1);
   s.setUniform('resot', [w, h]);
@@ -153,16 +150,16 @@ void main() {
 
   vec4 poo = texture2D(tex0, uv);
   
-  float lod6 = 1.0;
+  float lod6 = 1.0-poo.r*.001;
   uv.x += (sin(floor(uv.y*0.33*lod6)/lod6))*space; 
 
   vec2 lod2 = vec2(boxy.r, 8.);
   vec2 zuv1 = uv;
-  zuv1 += (rand(floor(zuv1*lod2)/lod2)*2.0-1.)*(poo.r*0.05)/separation;
+  zuv1 += (rand(floor(zuv1*lod2)/lod2)*2.0-1.)*separation+(poo.r*0.1);
 
   vec2 lod3 = vec2(16.0, boxy.g);
   vec2 zuv2 = uv;
-  zuv2 += (rand(floor(zuv2*lod3)/lod3)*2.0-1.)*0.004;//(poo.r*0.1)
+  zuv2 += (rand(floor(zuv2*lod3)/lod3)*2.0-1.)*0.004+(poo.r*0.1);//(poo.r*0.1)
   uv = vec2(zuv1.s, zuv2.t);
 
   vec4 tex = texture2DNearest(tex0, uv, resot);
